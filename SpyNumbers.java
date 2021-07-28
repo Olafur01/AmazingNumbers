@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class SpyNumbers {
     static Scanner sc; 
@@ -65,13 +66,21 @@ public class SpyNumbers {
     }
 
     public static boolean spyNumber(long number) {
-
-
-        return false;
+        // Creates an array for the number and the loops through this 
+        // to check if the sum and product between them is equal 
+        String numbers = Long.toString(number);
+        String[] numbersArray = numbers.split("");
+        int sum = 0;
+        int product = 1;
+        for (String s: numbersArray) {
+            sum += Integer.parseInt(s);
+            product *= Integer.parseInt(s);
+        }
+        return sum == product;
     }
 
     // Method for running the program if only one number has been entered
-    public static void oneNumber(long number) {
+    public static void oneParameter(long number) {
         // If number is natural it checks all properties of number through the different methods 
         boolean fuzzyNumber = fuzzNumber(number);
         boolean duckNumber = duckNumber(number);
@@ -89,24 +98,97 @@ public class SpyNumbers {
         System.out.println("    odd: " + !isNumberEven + "\n");  
     }
 
-    public static void twoNumbers(long number1, long number2) {
+    public static void twoParameters(long number1, long number2) {
         // Using a for loop to go through each of the numbers from the first number 
         // pluss the second number to output their properties 
         for (int i = 0; i < (int)number2; i++) {
+            printValues(number1);
+            number1++;
+        }
+    }
+    
+    public static void printValues(long number1) {
+        boolean fuzzyNumber = fuzzNumber(number1);
+        boolean duckNumber = duckNumber(number1);
+        boolean palindrome = palindrome(number1);
+        boolean isNumberEven = evenNumber(number1);
+        boolean gapfulNumber = gapfulNumber(number1);
+        boolean spyNumber = spyNumber(number1);
+        String evenNumber = (isNumberEven ? "even" : "odd");
+        // Outputting values in the format that is expected 
+        System.out.println(number1 + " is " + (fuzzyNumber ? "buzz, " : "") + (duckNumber ? "duck, " : "") 
+        + (palindrome ? "palindromic, " : "") + (gapfulNumber ? "gapful, " : "") + (spyNumber ? "gapful, " : "") 
+        + evenNumber);
+    }
+
+    public static void threeParameters(long number1, long number2, String parameter) {
+        int counter = 0;
+
+        while (counter < number2) {
             boolean fuzzyNumber = fuzzNumber(number1);
             boolean duckNumber = duckNumber(number1);
             boolean palindrome = palindrome(number1);
             boolean isNumberEven = evenNumber(number1);
             boolean gapfulNumber = gapfulNumber(number1);
             boolean spyNumber = spyNumber(number1);
-            // Output of whether it is an even or odd number
-            String evenNumber = (isNumberEven ? "even" : "odd");
-            // Outputting values in the format that is expected 
-            System.out.println(number1 + " is " + (fuzzyNumber ? "buzz, " : "") + (duckNumber ? "duck, " : "") 
-            + (palindrome ? "palindromic, " : "") + (gapfulNumber ? "gapful, " : "") + (spyNumber ? "gapful, " : "") 
-            + evenNumber);
+
+            // Uses switch to check whether the correct parameter is checked.
+            switch (parameter.toUpperCase()) {
+            // Even case
+            case "EVEN":
+                if (isNumberEven) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            // Odd case
+            case "ODD":
+                if (!isNumberEven) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            // Duck case
+            case "DUCK":
+                if (duckNumber) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            // Buzz case
+            case "BUZZ":
+                if (fuzzyNumber) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            // Palindrome case
+            case "PALINDROMIC":
+                if (palindrome) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            // Gapful case
+            case "GAPFUL":
+                if (gapfulNumber) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            // The default case will be for spyNumbers, though nothing should come to this stage that is not part 
+            // of the parameters. Have a check in the run method 
+            default:
+                if (spyNumber) {
+                    printValues(number1);
+                    counter++;
+                }
+            break;
+            }
             number1++;
         }
+        // Add extra whitespace at the end 
+        System.out.println();
     }
 
     // Introduction method that greets the user
@@ -126,6 +208,7 @@ public class SpyNumbers {
     public static void run() {
         Scanner sc = new Scanner(System.in);
         boolean runProgram = true;
+        String[] properties = {"EVEN", "ODD", "BUZZ", "DUCK", "PALINDROMIC", "GAPFUL", "SPY"};
         // Showing introduction to user 
         introduction();
         
@@ -152,7 +235,7 @@ public class SpyNumbers {
                     } else if (Long.parseLong(number) < 0) {
                         System.out.println("The first parameter should be a natural number or zero.\n");
                     } else {
-                        oneNumber(Long.parseLong(number));
+                        oneParameter(Long.parseLong(number));
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("The first parameter should be a natural number or zero.\n");
@@ -174,7 +257,7 @@ public class SpyNumbers {
                     } else if (Long.parseLong(numbers[1]) < 1) {
                         System.out.println("The second parameter should be a natural number.\n");
                     } else {
-                        twoNumbers(Long.parseLong(numbers[0]),Long.parseLong(numbers[1]));
+                        twoParameters(Long.parseLong(numbers[0]),Long.parseLong(numbers[1]));
                         System.out.println();
                     }
                 } catch (NumberFormatException e) {
@@ -185,9 +268,26 @@ public class SpyNumbers {
                 // Same try/catch as above, however, this time it also checks whether the parameter is correct
                 case 3:
                 try {
-
+                    if (Long.parseLong(numbers[0]) == 0) {
+                        System.out.println("Goodbye");
+                        System.out.println();
+                        System.out.println("Process finished with exit code 0");
+                    } else if (Long.parseLong(numbers[0]) < 0) {
+                        System.out.println("The first parameter should be a natural number or zero.\n");
+                    } else if (Long.parseLong(numbers[1]) < 1) {
+                        System.out.println("The second parameter should be a natural number.\n");
+                        // Converting the array to a list to check if it contains the property that we are searching for
+                    } else if (!Arrays.asList(properties).contains(numbers[2].toUpperCase())) {
+                        // Output to user, where is returns the error in upper case
+                        System.out.println(String.format("The property [%s] is wrong", numbers[2].toUpperCase()));
+                        // Prints out the avaliable properties in upper case 
+                        System.out.println(String.format("Available properties: %s\n", Arrays.toString(properties).toUpperCase()));  
+                    }
+                    else {
+                        threeParameters(Long.parseLong(numbers[0]),Long.parseLong(numbers[1]), numbers[2]);
+                    }
                 } catch (NumberFormatException e) {
-                    System.out.println("Hello");
+                    System.out.println("The parameters should be a natural number.\n");
                 }
                 break;
                 default:
